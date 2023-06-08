@@ -1,12 +1,13 @@
+import java.util.Stack;
 
 public class CPU {
 	public enum EState {
 		eStopped,
 		eRunning
 	}
-	
+	Stack<Integer> stack = new Stack<>();
 	private Memory memory;
-	public void assocate(Memory memory) { this.memory = memory; }
+	public void assocate(Memory memory) { this.memory = memory;}
 	
 	private EState eState;
 	// registers
@@ -28,39 +29,48 @@ public class CPU {
 		sp = new Register();
 	}
 	private void fetch() {
-		System.out.println("fetch");
+		//System.out.println("fetch");
+
+
 		mar.setValue(cs.getValue()+pc.getValue());
 		memory.load();
 		ir.setValue(mbr.getValue());
 	}
 	private void decode() {
-		System.out.println("decode");
+		//System.out.println("decode");
 		// load operand
+		//System.out.println(ir.getValue());
+		//System.out.println("오퍼레이터"+ir.getOperator());
+		//System.out.println("오퍼랜드"+ir.getOperand());
+
 	}
 	private void execute() {
 		pc.setValue(pc.getValue() + 1);
-		System.out.println("execute");
+		//System.out.println("execute");
 		switch (ir.getOperator()) {
-		case 1:
+		case 0:
 			this.halt();
 			break;
-		case 2:
+		case 1:
 			this.load();
 			break;
-		case 3:
+		case 2:
 			this.loadO();
 			break;
-		case 4:
+		case 3:
 			this.storeO();
 			break;
-		case 5:
+		case 4:
 			this.moveR();
 			break;
-		case 6:
+		case 5:
 			this.move();
 			break;
-		case 7:
+		case 6:
 			this.addR();
+			break;
+		case 7:
+			this.divC();
 			break;
 		case 8:
 			this.ret();
@@ -80,56 +90,73 @@ public class CPU {
 		case 13:
 			this.loadR();
 			break;
+		case 14:
+			this.loadC();
+			break;
 		default:
 			break;
 		}
 	}
-	private void loadR() {
+	private void divC() {
+		ac.setValue(ac.getValue()/ir.getOperand());
 		
+	}
+	private void loadC() {
+		ac.setValue(ir.getOperand());
+	}
+	private void loadR() {
+		this.ac.setValue(stack.get(0));
 		
 	}
 	private void out() {
-		
+		System.out.println("확성기");
+		System.out.println(ac.getValue());
+		System.out.println("확성기");
+
 		
 	}
 	private void newObject() {
-		
-		
+			this.memory.addHeap(ir.getOperand()/4);
 	}
 	private void push() {
-		
+		this.stack.push(ir.getOperand());
 		
 	}
 	private void call() {
-		// TODO Auto-generated method stub
-		
+		this.stack.push(this.pc.getValue());
+		this.pc.setValue(this.ir.getOperand());
 	}
 	private void ret() {
-		// TODO Auto-generated method stub
-		
+		this.pc.setValue(this.stack.get(ir.getOperand()/4));
+		this.stack= new Stack<>();
 	}
 	private void addR() {
-		// TODO Auto-generated method stub
+		ac.setValue(ac.getValue()+ac2.getValue());
 		
 	}
 	private void move() {
-		// TODO Auto-generated method stub
+		
 		
 	}
 	private void moveR() {
-		// TODO Auto-generated method stub
+		if(ir.getOperand()==2) {
+			ac2.setValue(ac.getValue());
+		}
 		
 	}
 	private void storeO() {
-		// TODO Auto-generated method stub
+		this.mar.setValue(ir.getOperand()/4);
+		this.mbr.setValue(ac.getValue());
+		this.memory.storeHeap();
 		
 	}
 	private void loadO() {
-		// TODO Auto-generated method stub
-		
+		this.mar.setValue(ir.getOperand()/4);
+		this.memory.loadHeap();
+		this.ac.setValue(mbr.getValue());
 	}
 	private void load() {
-		// TODO Auto-generated method stub
+		
 		
 	}
 	public void add() {
@@ -150,7 +177,6 @@ public class CPU {
 			this.fetch();
 			this.decode();
 			this.execute();
-			// checkInterrupt();
 		}
 	}
 	public class Register {
@@ -170,11 +196,11 @@ public class CPU {
 	}
 	private class IR extends Register {
 		public int getOperator() {
-
-			return this.value;
+			return this.value%100;
 		}
 		public int getOperand() {
-			int operand = value & 0x00FFFFFF;
+			int operand = value/100;
+
 			return operand;
 		}
 	}

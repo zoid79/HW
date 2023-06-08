@@ -4,7 +4,12 @@ import java.util.HashMap;
 import java.util.Scanner;
 
 public class Loader {
-	int sizeDS, sizeHS, sizeSS;
+	private Memory memory;
+	private CPU.Register CS;
+	private CPU.Register SS;
+	private CPU.Register HS;
+	private CPU.Register DS;
+	
 	public enum ESymbolType {
 		eVariable,
 		eLabel,
@@ -28,8 +33,7 @@ public class Loader {
 		Scanner scanner;
 		try {
 			scanner = new Scanner(new File("code/exe2"));
-			parseHeader(scanner);
-			parseCode(scanner);
+			parse(scanner);
 			scanner.close();
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
@@ -38,36 +42,57 @@ public class Loader {
 		
 	}
 	
-	private void parseHeader(Scanner scanner) {
-		
-		String line = scanner.nextLine();
-		String[] tokens = line.split("[ \t]");
-		System.out.println(tokens[1]);
+	private void parse(Scanner scanner) {
+		while(scanner.hasNext()) {
+			String line = scanner.nextLine();
+			System.out.println(line);
+			String[] tokens = line.split("[ \t]");
+			if (tokens[0].charAt(0)=='$') {
+				if (tokens[0].charAt(1) == 'D') {
+					DS.setValue(Integer.parseInt(tokens[1]));
+				} else if (tokens[0].charAt(1) == 'S') {
+					SS.setValue(Integer.parseInt(tokens[1]));
+				} else if (tokens[0].charAt(1) == 'H') {
+					HS.setValue(Integer.parseInt(tokens[1]));		
+				}
+				else if (tokens[0].charAt(1) == 'C') {
+					CS.setValue(Integer.parseInt(tokens[1]));		
+				}
+			} else {
+				try{
+					if(tokens.length==1) {
+						this.memory.csadd(Integer.parseInt(tokens[0]),0);
+					}else 
+					this.memory.csadd(Integer.parseInt(tokens[0]),Integer.parseInt(tokens[1]));
 
-		if (tokens[0].charAt(0)=='$') {
-			if (tokens[0].charAt(1) == 'D') {
-				sizeDS = Integer.parseInt(tokens[1]);
-			} else if (tokens[0].charAt(1) == 'S') {
-				sizeSS = Integer.parseInt(tokens[1]);
-			} else if (tokens[0].charAt(1) == 'H') {
-				sizeHS = Integer.parseInt(tokens[1]);			
+				}
+				catch (NumberFormatException ex) {
+					this.memory.dsadd(tokens);
+				}
+				
 			}
-			else if (tokens[0].charAt(1) == 'C') {
-				sizeHS = Integer.parseInt(tokens[1]);			
-			}
-		} else {
-			this.symbolTable.put(tokens[0], 
-					new SymbolEntity(ESymbolType.eVariable, Integer.parseInt(tokens[1])));
 		}
 		
+		
+		this.memory.show();
 	}
 	private String[] getTokens(String line) {
 		String[] tokens = line.split("[ \t]*");
 		return tokens;
 	}
 
-	private void parseCode(Scanner scanner) {
+
+	public void associate(Memory memory) {
+		this.memory=memory;
 		
+	}
+
+	public void associate(CPU.Register cs, CPU.Register ds, CPU.Register ss, CPU.Register hs) {
+		System.out.println(cs);
+		this.CS=cs;
+		this.HS=hs;
+		this.SS=ss;
+		this.DS=ds;
 		
 	}
 
