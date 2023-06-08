@@ -1,0 +1,51 @@
+		.header
+		$DS 12
+		count 0
+		sum 4
+		i 8
+		$SS 0
+		$HS 0
+		
+		.code
+
+		move mar @count
+		move mbr 10
+		sto		
+
+		move mar @sum
+		move mbr 0
+		sto
+		
+		move mar @i
+		move mbr 0
+		sto
+start: 	
+// read i
+		move mar @i
+		lda
+		move ac1 mbr
+// read count		
+		move mar @count
+		lda
+		move ac2 mbr
+// i - count
+		sub ac1 ac2
+// i >= count then jump to end
+		gtj end
+			
+// read sum			
+		move mar @sum
+		lda
+		mov ac1 mbr
+// ac2 = 1
+		mov ac2 1
+// add sum = sum + 1
+		add ac1 ac2
+		move mar @sum 
+		mov mbr ac1
+		sto
+		
+		jump start
+		
+end: 	halt 
+		.end
