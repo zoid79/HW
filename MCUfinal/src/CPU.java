@@ -124,9 +124,7 @@ public class CPU {
 		
 	}
 	private void out() {
-		System.out.println("확성기");
 		System.out.println(ac.getValue());
-		System.out.println("확성기");
 	}
 	private void newObject() {
 		int count=ir.getOperand()/4;
