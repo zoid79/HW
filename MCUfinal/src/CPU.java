@@ -48,6 +48,7 @@ public class CPU {
 	}
 	private void fetch() {
 		mar.setValue((this.memoryTable.get(cs.getValue())*100)+pc.getValue());
+
 		memory.load();
 		ir.setValue(mbr.getValue());
 	}
@@ -61,9 +62,7 @@ public class CPU {
 		case 0:
 			this.halt();
 			break;
-		case 1:
-			this.load();
-			break;
+	
 		case 2:
 			this.loadO();
 			break;
@@ -73,9 +72,7 @@ public class CPU {
 		case 4:
 			this.moveR();
 			break;
-		case 5:
-			this.move();
-			break;
+		
 		case 6:
 			this.addR();
 			break;
@@ -98,10 +95,10 @@ public class CPU {
 			this.out();
 			break;
 		case 13:
-			this.loadA();
+			this.loadR();
 			break;
 		case 14:
-			this.loadC();
+			this.loadA();
 			break;
 		default:
 			break;
@@ -111,15 +108,15 @@ public class CPU {
 		ac.setValue(ac.getValue()/ir.getOperand());
 		
 	}
-	private void loadC() {
+	private void loadA() {
 		this.mar.setValue(memoryTable.get(this.ds.getValue())*100+ir.getOperand());
 		if(this.mar.getValue()>=100)
 			System.exit(0);
 		this.memory.load();
 		ac.setValue(this.mbr.getValue());
 	}
-	private void loadA() {
-		this.mar.setValue(memoryTable.get(this.ss.getValue())*100);
+	private void loadR() {
+		this.mar.setValue(memoryTable.get(this.ss.getValue())*100+ir.getOperand()/4);
 		if(this.mar.getValue()>=500&&this.mar.getValue()<300)
 		System.exit(0);
 		this.memory.load();
@@ -195,10 +192,7 @@ public class CPU {
 		ac.setValue(ac.getValue()+ac2.getValue());
 		
 	}
-	private void move() {
-		
-		
-	}
+
 	private void moveR() {
 		if(ir.getOperand()==2) {
 			ac2.setValue(ac.getValue());
@@ -220,14 +214,8 @@ public class CPU {
 		this.memory.load();
 		this.ac.setValue(mbr.getValue());
 	}
-	private void load() {
 
-	}
-	public void add() {
-//		mar.setValue(ir.getOperand());
-//		memory.load();		
-//		ac.setValue(ac.getValue() + mbr.getValue());
-	}
+
 	public void halt() {
 		this.eState = EState.eStopped;
 	}
