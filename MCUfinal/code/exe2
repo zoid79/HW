@@ -1,7 +1,7 @@
-$DS 0
-$CS 9
-$HS 80
-$SS 96
+$DS 9
+$CS 71
+$HS 16
+$SS 6
 @keyboard 1000
 average 32
 @math 60
