@@ -1,4 +1,5 @@
 import java.util.Stack;
+import java.util.Vector;
 
 public class CPU {
 	public enum EState {
@@ -7,13 +8,16 @@ public class CPU {
 	}
 	Stack<Integer> stack = new Stack<>();
 	private Memory memory;
-	public void assocate(Memory memory) { this.memory = memory;}
+	public void assocate(Memory memory) { this.memory = memory;
+	}
 	
 	private EState eState;
 	// registers
 	private IR ir;
 	public Register mar, mbr;
 	public Register cs,ds,ss,hs, pc, ac,ac2,sp;
+	public Vector<Integer> memoryTable;
+	public Vector<Integer> unUsedMemory;
 
 	public CPU() {
 		ir = new IR();
@@ -27,12 +31,27 @@ public class CPU {
 		ac = new Register();
 		ac2 = new Register();
 		sp = new Register();
+		this.memoryTable = new Vector<Integer>();
+		this.unUsedMemory = new Vector<Integer>();
+		this.memoryTable.add(1);
+		this.unUsedMemory.add(0);
+		this.unUsedMemory.add(2);
+		this.unUsedMemory.add(3);
+		this.unUsedMemory.add(4);
+		this.unUsedMemory.add(5);
+		this.unUsedMemory.add(6);
+		this.unUsedMemory.add(7);
+		this.unUsedMemory.add(8);
+		this.unUsedMemory.add(9);
+		this.unUsedMemory.add(10);
+
 	}
 	private void fetch() {
 		//System.out.println("fetch");
 
-
-		mar.setValue(cs.getValue()+pc.getValue());
+		mar.setValue((this.memoryTable.get(cs.getValue())*100)+pc.getValue());
+		//System.out.println(mar.getValue());
+		//System.out.println("전송완료");
 		memory.load();
 		ir.setValue(mbr.getValue());
 	}
@@ -203,5 +222,17 @@ public class CPU {
 
 			return operand;
 		}
+	}
+	public int getUnusedMemory(CPU.Register segment) {
+		try {
+			int index =this.unUsedMemory.get(0);
+			this.memoryTable.add(index);
+			this.unUsedMemory.remove(0);
+			segment.setValue(index);
+			return index;
+		}catch(IndexOutOfBoundsException e) {
+			return -1;
+		}
+		
 	}
 }

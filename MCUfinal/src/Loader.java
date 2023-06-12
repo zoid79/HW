@@ -2,14 +2,12 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Scanner;
+import java.util.Vector;
 
 public class Loader {
 	private Memory memory;
-	private CPU.Register CS;
-	private CPU.Register SS;
-	private CPU.Register HS;
-	private CPU.Register DS;
-	
+
+	private CPU cpu;
 	public enum ESymbolType {
 		eVariable,
 		eLabel,
@@ -49,25 +47,39 @@ public class Loader {
 			String[] tokens = line.split("[ \t]");
 			if (tokens[0].charAt(0)=='$') {
 				if (tokens[0].charAt(1) == 'D') {
-					DS.setValue(Integer.parseInt(tokens[1]));
+					int address=this.cpu.getUnusedMemory(cpu.ds);
+					if(address==-1)System.out.println("메모리가 부족해 프로그램을 올릴 수 없습니다");
+					System.out.println(address+"--DS");
+
+					
 				} else if (tokens[0].charAt(1) == 'S') {
-					SS.setValue(Integer.parseInt(tokens[1]));
+					int address=this.cpu.getUnusedMemory(cpu.ss);
+					if(address==-1)System.out.println("메모리가 부족해 프로그램을 올릴 수 없습니다");
+					System.out.println(address+"--SS");
+
+					
 				} else if (tokens[0].charAt(1) == 'H') {
-					HS.setValue(Integer.parseInt(tokens[1]));		
+					int address=this.cpu.getUnusedMemory(cpu.hs);
+					if(address==-1)System.out.println("메모리가 부족해 프로그램을 올릴 수 없습니다");
+					System.out.println(address+"--HS");
+	
 				}
 				else if (tokens[0].charAt(1) == 'C') {
-					CS.setValue(Integer.parseInt(tokens[1]));		
+					int address=this.cpu.getUnusedMemory(cpu.cs);
+					if(address==-1)System.out.println("메모리가 부족해 프로그램을 올릴 수 없습니다");
+					System.out.println(address+"--CS");
+	
 				}
 			} else {
 				try{
 					if(tokens.length==1) {
-						this.memory.csadd(Integer.parseInt(tokens[0]),0);
+						this.memory.csadd(cpu.memoryTable,Integer.parseInt(tokens[0]),0);
 					}else 
-					this.memory.csadd(Integer.parseInt(tokens[0]),Integer.parseInt(tokens[1]));
+					this.memory.csadd(cpu.memoryTable,Integer.parseInt(tokens[0]),Integer.parseInt(tokens[1]));
 
 				}
 				catch (NumberFormatException ex) {
-					this.memory.dsadd(tokens);
+					this.memory.dsadd(cpu.memoryTable,tokens);
 				}
 				
 			}
@@ -87,12 +99,9 @@ public class Loader {
 		
 	}
 
-	public void associate(CPU.Register cs, CPU.Register ds, CPU.Register ss, CPU.Register hs) {
-		System.out.println(cs);
-		this.CS=cs;
-		this.HS=hs;
-		this.SS=ss;
-		this.DS=ds;
+	public void associate(CPU cpu) {
+		this.cpu = cpu;
+		
 		
 	}
 

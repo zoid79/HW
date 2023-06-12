@@ -1,18 +1,31 @@
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.Iterator;
 import java.util.Scanner;
 import java.util.Vector;
 
 public class Memory {
 	private Vector<Integer> memory;
 	private Vector<Integer> heapmemory;
-	private Vector<Integer> stackmemory;
 	private CPU.Register MAR;
 	private CPU.Register MBR;
+	public CPU.Register ds;
+	public CPU.Register ss;
+	public CPU.Register hs;
+	public CPU.Register cs;
+
 	public Memory() {
-		this.memory = new Vector<Integer>();
+		this.memory = new Vector<Integer>(1000);
+
+		this.memory.setSize(1000);
+		for(int i=0;i<1000;i++) {
+			this.memory.set(i, -1);
+		}
+		for(int i=100;i<200;i++) {
+			this.memory.set(i, 0);
+		}
+
 		this.heapmemory = new Vector<Integer>();
-		this.stackmemory = new Vector<Integer>();
 //		Scanner scanner;
 //		try {
 //			scanner = new Scanner(new File("code/exe2"));
@@ -31,13 +44,17 @@ public class Memory {
 		
 		
 	}
-	public void associate (CPU.Register MAR, CPU.Register MBR) {
-		this.MAR = MAR;
-		this.MBR = MBR;
+	public void associate (CPU cpu) {
+		this.MAR = cpu.mar;
+		this.MBR = cpu.mbr;
+		this.hs=cpu.hs;
+		this.cs=cpu.cs;
+		this.ss=cpu.ss;
+		this.ds=cpu.ds;
+
 		
 	}
 	public void load() {
-
 		MBR.setValue(this.memory.get(this.MAR.getValue()));
 	}
 	
@@ -47,12 +64,20 @@ public class Memory {
 		this.memory.set(address, value);
 	}
 
-	public void csadd(int operator, int operand) {
-		this.memory.add(operand*100+operator);
-		
+	public void csadd(Vector<Integer> memoryTable, int operator, int operand) {
+		for(int i=0;i<100;i++) {
+			if(this.memory.get(memoryTable.get(this.cs.getValue())*100+i)==-1) {
+			this.memory.set(memoryTable.get(this.cs.getValue())*100+i,operand*100+operator);
+			break;}
+		}
 	}
-	public void dsadd(String[] tokens) {
-		this.memory.add(Integer.parseInt(tokens[1]));
+	public void dsadd(Vector<Integer> memoryTable, String[] tokens) {
+		for(int i=0;i<100;i++) {
+			if(this.memory.get(memoryTable.get(this.ds.getValue())*100+i)==-1) {
+			this.memory.set(memoryTable.get(this.ds.getValue())*100+i,Integer.parseInt(tokens[1]));
+			break;
+			}
+		}
 
 	}
 	public void add(int index) {
@@ -81,4 +106,15 @@ public class Memory {
 	public void loadHeap() {
 		MBR.setValue(this.heapmemory.get(this.MAR.getValue()));		
 	}
+//	public int toProcess(Vector<Integer> memoryTable) {
+//		for(int i=0;i<this.memory.size();i=i+100) {
+//			if(this.memory.get(i)==-1) {
+//				this.memory.set(i, 0);
+//				memoryTable.add(i/100);
+//				return memoryTable.size()-1;
+//			}
+//		}
+//		return -1;
+//		
+//	}
 }

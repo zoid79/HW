@@ -7,9 +7,9 @@ public class Main {
 		Memory memory = new Memory();
 		
 		loader.associate(memory);
-		loader.associate(cpu.cs, cpu.ds,cpu.ss,cpu.hs);
+		loader.associate(cpu);
 		cpu.assocate(memory);
-		memory.associate(cpu.mar, cpu.mbr);
+		memory.associate(cpu);
 		loader.load();
 		System.out.println("시작");
 		cpu.start();
