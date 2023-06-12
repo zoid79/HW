@@ -72,6 +72,9 @@ public class Memory {
 		}
 	}
 	public void dsadd(Vector<Integer> memoryTable, String[] tokens) {
+		System.out.println(memoryTable.get(this.ds.getValue()));
+		System.out.println(this.ds.getValue());
+
 		for(int i=0;i<100;i++) {
 			if(this.memory.get(memoryTable.get(this.ds.getValue())*100+i)==-1) {
 			this.memory.set(memoryTable.get(this.ds.getValue())*100+i,Integer.parseInt(tokens[1]));
@@ -92,13 +95,7 @@ public class Memory {
 		this.memory.setSize(value);
 		
 	}
-	public void addHeap(int size) {
-
-		for(int i=0;i<size;i++) {
-			this.heapmemory.add(null);
-		}
-		
-	}
+	
 	public void storeHeap() {
 		this.heapmemory.set(this.MAR.getValue(), this.MBR.getValue());
 		
@@ -117,4 +114,11 @@ public class Memory {
 //		return -1;
 //		
 //	}
+	public boolean checkEmpty() {
+		if(this.memory.get(this.MAR.getValue())==-1)
+			return true;
+		else
+			return false;
+		
+	}
 }

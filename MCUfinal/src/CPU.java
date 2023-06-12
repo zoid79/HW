@@ -50,10 +50,11 @@ public class CPU {
 		//System.out.println("fetch");
 
 		mar.setValue((this.memoryTable.get(cs.getValue())*100)+pc.getValue());
-		//System.out.println(mar.getValue());
 		//System.out.println("전송완료");
 		memory.load();
 		ir.setValue(mbr.getValue());
+	//	System.out.println(mbr.getValue());
+
 	}
 	private void decode() {
 		//System.out.println("decode");
@@ -124,7 +125,9 @@ public class CPU {
 		ac.setValue(ir.getOperand());
 	}
 	private void loadR() {
-		this.ac.setValue(stack.get(0));
+		this.mar.setValue(memoryTable.get(this.ss.getValue())*100);
+		this.memory.load();
+		this.ac.setValue(mbr.getValue());
 		
 	}
 	private void out() {
@@ -135,19 +138,53 @@ public class CPU {
 		
 	}
 	private void newObject() {
-			this.memory.addHeap(ir.getOperand()/4);
+		int count=ir.getOperand()/4;
+		this.mbr.setValue(0);
+		for(int i=memoryTable.get(this.hs.getValue())*100;count>0;i++) {
+			this.mar.setValue(i);
+			if(this.memory.checkEmpty()) {
+				this.memory.store();
+				count=count-1;
+				}
+
+		}
+			
 	}
+	
 	private void push() {
-		this.stack.push(ir.getOperand());
-		
+		int count=1;
+		this.mbr.setValue(ir.getOperand());
+		for(int i=memoryTable.get(this.ss.getValue())*100;count>0;i++) {
+			this.mar.setValue(i);
+			if(this.memory.checkEmpty()) {
+				this.memory.store();
+				count=count-1;
+
+			}
+		}
 	}
 	private void call() {
-		this.stack.push(this.pc.getValue());
+		int count=1;
+		this.mbr.setValue(pc.getValue());
+		for(int i=memoryTable.get(this.ss.getValue())*100;count>0;i++) {
+			this.mar.setValue(i);
+			if(this.memory.checkEmpty()) {
+				this.memory.store();
+				count=count-1;
+
+			}
+		}
 		this.pc.setValue(this.ir.getOperand());
 	}
 	private void ret() {
-		this.pc.setValue(this.stack.get(ir.getOperand()/4));
-		this.stack= new Stack<>();
+		this.mar.setValue(memoryTable.get(this.ss.getValue())*100+ir.getOperand()/4);
+		this.memory.load();
+		this.pc.setValue(this.mbr.getValue());
+		this.mbr.setValue(-1);
+		for(int i=this.ss.getValue()*100;i<memoryTable.get(this.ss.getValue())*100+100;i++) {
+			mar.setValue(i);
+			this.memory.store();
+		}
 	}
 	private void addR() {
 		ac.setValue(ac.getValue()+ac2.getValue());
@@ -164,19 +201,20 @@ public class CPU {
 		
 	}
 	private void storeO() {
-		this.mar.setValue(ir.getOperand()/4);
+		this.mar.setValue(memoryTable.get(this.hs.getValue())*100+ir.getOperand()/4);
 		this.mbr.setValue(ac.getValue());
-		this.memory.storeHeap();
+		this.memory.store();
 		
 	}
 	private void loadO() {
-		this.mar.setValue(ir.getOperand()/4);
-		this.memory.loadHeap();
+		this.mar.setValue(memoryTable.get(this.hs.getValue())*100+ir.getOperand()/4);
+		this.memory.load();
 		this.ac.setValue(mbr.getValue());
 	}
 	private void load() {
-		
-		
+//		this.mar.setValue(this.ss.getValue()*100+ir.getOperand()/4);
+//		System.out.println(mar.getValue());
+//		this.memory.load();
 	}
 	public void add() {
 		mar.setValue(ir.getOperand());
@@ -228,7 +266,7 @@ public class CPU {
 			int index =this.unUsedMemory.get(0);
 			this.memoryTable.add(index);
 			this.unUsedMemory.remove(0);
-			segment.setValue(index);
+			segment.setValue(this.memoryTable.size()-1);
 			return index;
 		}catch(IndexOutOfBoundsException e) {
 			return -1;
