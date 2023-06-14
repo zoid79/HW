@@ -1,0 +1,87 @@
+
+		.data
+		@math 60
+		@english 70
+
+		@keyboard 1000
+		@monitor 2000
+
+
+		.code
+Main:
+		New 8
+		LoadA @math
+		StoreO 0
+		LoadA @english
+		StoreO 4
+		New 8
+		LoadA @math
+		StoreO 8
+		LoadA @english
+		StoreO 12
+		Push 0
+		Call sum
+		Out @monitor
+		Push 0
+		Call average
+		Out @monitor
+		Push 0
+		Push 8
+		Call averageAll
+		Out @monitor
+		Push 0
+		Push 8
+		Call sumAll
+		Out @monitor
+		Halt
+sum:
+		LoadR 0
+		LoadO 0
+		MoveR ac2
+		LoadR 0
+		LoadO 4
+		AddR 2
+		Ret 4
+average: 	
+		LoadR 0
+		LoadO 0
+		MoveR ac2
+		LoadR 0
+		LoadO 4
+		AddR 2
+		DivC 2
+		Ret 4
+averageAll: 	
+		LoadR 0
+		LoadO 0
+		MoveR 2
+		LoadR 0
+		LoadO 4
+		AddR ac2
+		MoveR ac2
+		LoadR 4
+		LoadO 0
+		AddR ac2
+		MoveR ac2
+		LoadR 4
+		LoadO 4
+		AddR ac2
+		DivC 4
+		Ret 8
+sumAll:
+		LoadR 0
+		LoadO 0
+		MoveR ac2
+		LoadR 0
+		LoadO 4
+		AddR ac2
+		MoveR ac2
+		LoadR 4
+		LoadO 0
+		AddR ac2
+		MoveR ac2
+		LoadR 4
+		LoadO 4
+		AddR ac2
+		Ret 8
+.end
