@@ -117,7 +117,7 @@ public class CPU {
 	}
 	private void loadR() {
 		this.mar.setValue(memoryTable.get(this.ss.getValue())*100+ir.getOperand()/4);
-		if(this.mar.getValue()>=500&&this.mar.getValue()<300)
+		if(this.mar.getValue()>=500||this.mar.getValue()<300)
 		System.exit(0);
 		this.memory.load();
 		this.ac.setValue(mbr.getValue());
@@ -130,7 +130,7 @@ public class CPU {
 		int count=ir.getOperand()/4;
 		this.mbr.setValue(0);
 		for(int i=memoryTable.get(this.hs.getValue())*100;count>0;i++) {
-			if(this.mar.getValue()>=400&&this.mar.getValue()<200)
+			if(this.mar.getValue()>=400||this.mar.getValue()<200)
 			System.exit(0);
 			this.mar.setValue(i);
 			if(this.memory.checkEmpty()) {
@@ -146,7 +146,7 @@ public class CPU {
 		this.mbr.setValue(ir.getOperand());
 		for(int i=memoryTable.get(this.ss.getValue())*100;count>0;i++) {
 			this.mar.setValue(i);
-			if(this.mar.getValue()>=500&&this.mar.getValue()<300)
+			if(this.mar.getValue()>=500||this.mar.getValue()<300)
 			System.exit(0);
 			if(this.memory.checkEmpty()) {
 				this.memory.store();
@@ -159,7 +159,7 @@ public class CPU {
 		this.mbr.setValue(pc.getValue());
 		for(int i=memoryTable.get(this.ss.getValue())*100;count>0;i++) {
 			this.mar.setValue(i);
-			if(this.mar.getValue()>=500&&this.mar.getValue()<300)
+			if(this.mar.getValue()>=500||this.mar.getValue()<300)
 				System.exit(0);
 			if(this.memory.checkEmpty()) {
 				this.memory.store();
@@ -174,7 +174,7 @@ public class CPU {
 	}
 	private void ret() {
 		this.mar.setValue(memoryTable.get(this.ss.getValue())*100+ir.getOperand()/4);
-		if(this.mar.getValue()>=500&&this.mar.getValue()<300)
+		if(this.mar.getValue()>=500||this.mar.getValue()<300)
 			System.exit(0);
 		this.memory.load();
 		this.pc.setValue(this.mbr.getValue());
@@ -199,7 +199,7 @@ public class CPU {
 	}
 	private void storeO() {
 		this.mar.setValue(memoryTable.get(this.hs.getValue())*100+ir.getOperand()/4);
-		if(this.mar.getValue()>=400&&this.mar.getValue()<200)
+		if(this.mar.getValue()>=400||this.mar.getValue()<200)
 			System.exit(0);
 		this.mbr.setValue(ac.getValue());
 		this.memory.store();
@@ -207,7 +207,7 @@ public class CPU {
 	}
 	private void loadO() {
 		this.mar.setValue(memoryTable.get(this.hs.getValue())*100+ir.getOperand()/4);
-		if(this.mar.getValue()>=400&&this.mar.getValue()<200)
+		if(this.mar.getValue()>=400||this.mar.getValue()<200)
 			System.exit(0);
 		this.memory.load();
 		this.ac.setValue(mbr.getValue());
