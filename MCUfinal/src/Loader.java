@@ -8,10 +8,10 @@ public class Loader {
 	private Memory memory;
 
 	private CPU cpu;
-	public void load() {
+	public void load(String filename) {
 		Scanner scanner;
 		try {
-			scanner = new Scanner(new File("code/exe2"));
+			scanner = new Scanner(new File(filename));
 			parse(scanner);
 			scanner.close();
 		} catch (FileNotFoundException e) {

@@ -1,51 +1,84 @@
-		.header
-		$DS 12
-		count 0
-		sum 4
-		i 8
-		$SS 0
-		$HS 0
-		
-		.code
-
-		move mar @count
-		move mbr 10
-		sto		
-
-		move mar @sum
-		move mbr 0
-		sto
-		
-		move mar @i
-		move mbr 0
-		sto
-start: 	
-// read i
-		move mar @i
-		lda
-		move ac1 mbr
-// read count		
-		move mar @count
-		lda
-		move ac2 mbr
-// i - count
-		sub ac1 ac2
-// i >= count then jump to end
-		gtj end
-			
-// read sum			
-		move mar @sum
-		lda
-		mov ac1 mbr
-// ac2 = 1
-		mov ac2 1
-// add sum = sum + 1
-		add ac1 ac2
-		move mar @sum 
-		mov mbr ac1
-		sto
-		
-		jump start
-		
-end: 	halt 
-		.end
+$DS 9
+$CS 71
+$HS 16
+$SS 6
+@keyboard 1000
+average 32
+@math 60
+@english 70
+@monitor 2000
+sumAll 56
+sum 25
+Main 0
+averageAll 40
+11 8
+14 2
+3 0
+14 3
+3 4
+11 8
+14 2
+3 8
+14 3
+3 12
+10 0
+9 6
+12 4
+10 0
+9 1
+12 4
+10 0
+10 8
+9 8
+12 4
+10 0
+10 8
+9 5
+12 4
+0 
+13 0
+2 0
+4 2
+13 0
+2 4
+6 2
+8 4
+13 0
+2 0
+4 2
+13 0
+2 4
+6 2
+7 2
+8 4
+13 0
+2 0
+4 2
+13 0
+2 4
+6 2
+4 2
+13 4
+2 0
+6 2
+4 2
+13 4
+2 4
+6 2
+7 4
+8 8
+13 0
+2 0
+4 2
+13 0
+2 4
+6 2
+4 2
+13 4
+2 0
+6 2
+4 2
+13 4
+2 4
+6 2
+8 8
